@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +9,7 @@
 </head>
 <body>
     <h1>Чатик</h1>
+        <!-- разметка для формы с привязкой события -->
         <form action="" onsubmit="sendMessage(event)">
             <label for="messageText">Введите текст</label>
             <input type="text" id="messageText" autocomplete="off"/>
@@ -17,39 +18,41 @@
         <ul id='messages'>
         </ul>
         <script>
+            // подкючаемся к серверу через вебсокет
             var ws = new WebSocket("ws://localhost:8000/ws");
             var input_num = 1;
-            var database = []
+            // принимаем ответ от сервера преобразуя json в объект js
             ws.onmessage = function(event) {
                 var objects = JSON.parse(event.data)
-                console.log(objects)
                 var messages = document.getElementById('messages')
-                database += objects
+                var message
+                var content
+                // делаем проверку для того чтобы в случае добавления нового значения или перезагрузки срабатывали разные сценарии
                 if (input_num==1) {
-                    database.forEach(element => {
-                        var message = document.createElement('li')
-                        document.createTextNode(element.text)
-                    });
+                    for(var key in objects) {
+                        message = document.createElement('li')
+                        content = document.createTextNode(`Сообщение №${objects[key].num}: ${objects[key].text}`)
+                        message.appendChild(content)
+                        messages.appendChild(message)
+                    };
                 } else {
-                    var message = document.createElement('li')
-                    var content = document.createTextNode(event.data)
+                    message = document.createElement('li')
+                    var last_obj = objects[Object.keys(objects)[Object.keys(objects).length - 1]]
+                    content = document.createTextNode(`Сообщение №${last_obj.num}: ${last_obj.text}`)
+                    message.appendChild(content)
+                    messages.appendChild(message)
                 }
-                message.appendChild(content)
-                messages.appendChild(message)
             };
+            // Функция отправки сообщений с проверкой на заполненность поля инпут
             function sendMessage(event) {
                 var input = document.getElementById("messageText")
                 if (input.value != '') {
                     var info = {num: input_num, text: input.value}
                     ws.send(JSON.stringify(info))
                     input.value = ''
-                    console.log(input_num)
                     input_num += 1
                     event.preventDefault()
                 }
-            }
-            function load(){
-
             }
         </script>
 </body>

@@ -1,3 +1,4 @@
+import json
 from typing import Union
 from fastapi import FastAPI, WebSocket
 
@@ -14,6 +15,7 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         data = await websocket.receive_json()
         d[i] = data
-        await websocket.send_text(f"Сообщение номер {d[i]['num']}: {d[i]['text']}")
-        i += 1
         print(d)
+        await websocket.send_json(d)
+        i += 1
+

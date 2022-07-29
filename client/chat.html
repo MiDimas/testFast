@@ -19,22 +19,37 @@
         <script>
             var ws = new WebSocket("ws://localhost:8000/ws");
             var input_num = 1;
+            var database = []
             ws.onmessage = function(event) {
-                console.log(event)
+                var objects = JSON.parse(event.data)
+                console.log(objects)
                 var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
+                database += objects
+                if (input_num==1) {
+                    database.forEach(element => {
+                        var message = document.createElement('li')
+                        document.createTextNode(element.text)
+                    });
+                } else {
+                    var message = document.createElement('li')
+                    var content = document.createTextNode(event.data)
+                }
                 message.appendChild(content)
                 messages.appendChild(message)
             };
             function sendMessage(event) {
                 var input = document.getElementById("messageText")
-                var info = {num: input_num, text: input.value}
-                ws.send(JSON.stringify(info))
-                input.value = ''
-                console.log(input_num)
-                input_num += 1
-                event.preventDefault()
+                if (input.value != '') {
+                    var info = {num: input_num, text: input.value}
+                    ws.send(JSON.stringify(info))
+                    input.value = ''
+                    console.log(input_num)
+                    input_num += 1
+                    event.preventDefault()
+                }
+            }
+            function load(){
+
             }
         </script>
 </body>

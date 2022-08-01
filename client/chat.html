@@ -9,6 +9,7 @@
 </head>
 <body>
     <h1>Чатик</h1>
+    <h2>Ваш id: <span id="ws-id"></span></h2>
         <!-- разметка для формы с привязкой события -->
         <form action="" onsubmit="sendMessage(event)">
             <label for="messageText">Введите текст</label>
@@ -18,8 +19,10 @@
         <ul id='messages'>
         </ul>
         <script>
-            // подкючаемся к серверу через вебсокет
-            var ws = new WebSocket("ws://localhost:8000/ws");
+            // подкючаемся к серверу через вебсокет с id который привязывается автоматически
+            var client_id = Date.now()
+            document.querySelector("#ws-id").textContent = client_id;
+            var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
             var input_num = 1;
             // принимаем ответ от сервера преобразуя json в объект js
             ws.onmessage = function(event) {

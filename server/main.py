@@ -19,7 +19,7 @@ class ConnectionManager:
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
 
-    async def send_personal_message(self, message: str, websocket: WebSocket):
+    async def send_personal_message(self, message: dict, websocket: WebSocket):
         await websocket.send_json(message)
 
 
@@ -37,7 +37,6 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
         while True:
             data = await websocket.receive_json()
             d[i] = data
-            print(d)
             await manager.send_personal_message(d, websocket)
             i += 1
     except WebSocketDisconnect:

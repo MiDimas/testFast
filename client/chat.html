@@ -31,20 +31,26 @@
                 var message
                 var content
                 // делаем проверку для того чтобы в случае добавления нового значения или перезагрузки срабатывали разные сценарии
-                if (input_num==1) {
-                    for(var key in objects) {
-                        message = document.createElement('li')
-                        content = document.createTextNode(`Сообщение №${objects[key].num}: ${objects[key].text}`)
-                        message.appendChild(content)
-                        messages.appendChild(message)
-                    };
-                } else {
-                    message = document.createElement('li')
-                    var last_obj = objects[Object.keys(objects)[Object.keys(objects).length - 1]]
-                    content = document.createTextNode(`Сообщение №${last_obj.num}: ${last_obj.text}`)
-                    message.appendChild(content)
-                    messages.appendChild(message)
-                }
+                // На случай когда с сервера отправляется объект включающий несколько объектов
+            //     if (input_num==1) {
+            //         for(var key in objects) {
+            //             message = document.createElement('li')
+            //             content = document.createTextNode(`Сообщение №${objects[key].num}: ${objects[key].text}`)
+            //             message.appendChild(content)
+            //             messages.appendChild(message)
+            //         };
+            //     } else {
+            //         message = document.createElement('li')
+            //         var last_obj = objects[Object.keys(objects)[Object.keys(objects).length - 1]]
+            //         content = document.createTextNode(`Сообщение №${last_obj.num}: ${last_obj.text}`)
+            //         message.appendChild(content)
+            //         messages.appendChild(message)
+            //     }
+            // когда принимаем с эхосервера отправленный json без доп.вложенности
+                message = document.createElement('li')
+                content = document.createTextNode(`Сообщение №${objects.num}: ${objects.text}`)
+                message.appendChild(content)
+                messages.appendChild(message)
             };
             // Функция отправки сообщений с проверкой на заполненность поля инпут
             function sendMessage(event) {

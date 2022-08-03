@@ -16,14 +16,12 @@ async def connect(websocket: WebSocket):
     active_connections.append(websocket)
 
 
-def disconnect(self, websocket: WebSocket):
-    self.active_connections.remove(websocket)
+def disconnect(websocket: WebSocket):
+    active_connections.remove(websocket)
 
 
 async def send_personal_message(message: {'num': int, 'text': str}, websocket: WebSocket):
     await websocket.send_json(message)
-
-
 
 
 # проверка подключения,создание словаря для хранения полученных объектов, далее в цикле получение json объектов
@@ -37,8 +35,10 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
         while True:
             data = await websocket.receive_json()
             d[i] = data
-            await send_personal_message(d, websocket)
+            # Отправляем дата в случае если нужен одиночный только что принятый json объект
+            # Если нужны все объекты меняем 'data' на 'd' и раскомментируем на клиентской стороне
+            # отвечающие за это строчки кода
+            await send_personal_message(data, websocket)
             i += 1
     except WebSocketDisconnect:
         disconnect(websocket)
-

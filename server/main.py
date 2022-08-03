@@ -35,7 +35,6 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
         while True:
             data = await websocket.receive_json()
             data['num'] = i
-            print(data)
             # d[i] = data
             # Отправляем дата в случае если нужен одиночный только что принятый json объект
             # Если нужны все объекты меняем 'data' на 'd' и раскомментируем на клиентской стороне

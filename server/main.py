@@ -5,40 +5,40 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 app = FastAPI()
 
 
-# создаем класс управления соединениями и прописываем создание списка активных соединений
-# а так же методы создания соединения и их разрыва, так же метод отправки сообщений отправителю
+# прописываем создание списка активных соединений
+# а так же функции создания соединения и их разрыва, так же метод отправки сообщений отправителю
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
-
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
-
-    async def send_personal_message(self, message: dict, websocket: WebSocket):
-        await websocket.send_json(message)
+active_connections: List[WebSocket] = []
 
 
-manager = ConnectionManager()
+async def connect(websocket: WebSocket):
+    await websocket.accept()
+    active_connections.append(websocket)
 
 
-# проверка подключения, после подключения отправка данных из словаря, далее в цикле получение json объектов
+def disconnect(self, websocket: WebSocket):
+    self.active_connections.remove(websocket)
+
+
+async def send_personal_message(message: {'num': int, 'text': str}, websocket: WebSocket):
+    await websocket.send_json(message)
+
+
+
+
+# проверка подключения,создание словаря для хранения полученных объектов, далее в цикле получение json объектов
 # запись в ранее объявленый словарь и отправка словаря на фронт
 @app.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket)
+    await connect(websocket)
     try:
         d = {}
         i = 1
         while True:
             data = await websocket.receive_json()
             d[i] = data
-            await manager.send_personal_message(d, websocket)
+            await send_personal_message(d, websocket)
             i += 1
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        disconnect(websocket)
 

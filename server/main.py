@@ -31,14 +31,16 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
     await connect(websocket)
     try:
         # d = {}
-        # i = 1
+        i = 1
         while True:
             data = await websocket.receive_json()
+            data['num'] = i
+            print(data)
             # d[i] = data
             # Отправляем дата в случае если нужен одиночный только что принятый json объект
             # Если нужны все объекты меняем 'data' на 'd' и раскомментируем на клиентской стороне
             # отвечающие за это строчки кода
             await send_personal_message(data, websocket)
-            # i += 1
+            i += 1
     except WebSocketDisconnect:
         disconnect(websocket)

@@ -23,7 +23,7 @@
             var client_id = Date.now()
             document.querySelector("#ws-id").textContent = client_id;
             var ws = new WebSocket(`ws://localhost:8000/ws/${client_id}`);
-            var input_num = 1;
+            // var input_num = 1;
             // принимаем ответ от сервера преобразуя json в объект js
             ws.onmessage = function(event) {
                 var objects = JSON.parse(event.data)
@@ -56,10 +56,10 @@
             function sendMessage(event) {
                 var input = document.getElementById("messageText")
                 if (input.value != '') {
-                    var info = {num: input_num, text: input.value}
+                    var info = {text: input.value}
                     ws.send(JSON.stringify(info))
                     input.value = ''
-                    input_num += 1
+                    // input_num += 1
                     event.preventDefault()
                 }
             }
